@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/ARK-tube/ARKtube/main/arktube_linux/resources/icons/appIcon.png" alt="ARKtube" width="170" height="170">
+<img src="https://raw.githubusercontent.com/ARK-tube/ARKtube/main/arktube_linux/resources/icons/appIcon.png" alt="ARKtube" width="270" height="270">
 
 # ARKtube
 
