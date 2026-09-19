@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/ARK-tube/ARKtube/main/arktube_linux/resources/icons/appIcon.png" alt="ARKtube" width="270" height="270">
+<img src="https://raw.githubusercontent.com/ARK-tube/ARKtube/main/arktube_linux/resources/icons/appIcon.png" alt="ARKtube" width="296" height="296">
 
 # ARKtube
 
@@ -58,6 +58,10 @@ cmake -B build -S . && cmake --build build
 Requires CMake ≥ 3.16, a C11 compiler, `libgtk-3-dev`, and `libwebkit2gtk-4.1-dev`.
 Full instructions are in the [repository README](https://github.com/ARK-tube/ARKtube#install).
 
+---
+
+<sub>ARKtube is an independent project. It is not affiliated with or endorsed by Google or YouTube.
+YouTube is a trademark of Google LLC.</sub>
 ---
 
 <sub>ARKtube is an independent project. It is not affiliated with or endorsed by Google or YouTube.
