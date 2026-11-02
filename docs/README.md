@@ -1,9 +1,11 @@
 # ARKtube — Docs
 
 **Branch:** `main`
-**Scope:** the ARKtube application itself — currently the native
-GTK3 + WebKit2GTK Linux app in `arktube_linux/`, and how it's built and
-packaged.
+**Scope:** the ARKtube application itself — the native GTK3 +
+WebKit2GTK Linux app in `arktube_linux/`, the native Win32 + WebView2
+Windows port in `arktube-windows/` (early, module-for-module mirror of
+the Linux app — see `arktube-windows/README.md`), and how both are
+built and packaged.
 
 This is not the `webtop` branch's docs. That branch is a separate, thin
 session-integration layer (getting an already-installed ARKtube onto the
@@ -21,11 +23,12 @@ acceleration notes) still applies to the current native app.
 
 ## Read this first
 
-The repo root [`README.md`](../README.md) and
-[`arktube_linux/README.md`](../arktube_linux/README.md) are the primary,
-up-to-date references for this branch. They cover the project's goal,
-what it's built with, its current feature set, and how to build it.
-Start there before these docs.
+The repo root [`README.md`](../README.md),
+[`arktube_linux/README.md`](../arktube_linux/README.md), and
+[`arktube-windows/README.md`](../arktube-windows/README.md) are the
+primary, up-to-date references for this branch. They cover the
+project's goal, what each port is built with, its current feature set,
+and how to build it. Start there before these docs.
 
 ## What lives here
 

@@ -28,6 +28,7 @@ YouTube (youtube.com/tv)  +  GTK3 + WebKit2GTK  =  YouTube, installed.
 | Project | What it is | Where |
 |---|---|---|
 | **ARKtube for Linux** | Native GTK3 + WebKit2GTK client for `youtube.com/tv`: fullscreen persistence, gamepad and remote input, offline screen, boot splash, `.deb` builds from CI | [`main`](https://github.com/ARK-tube/ARKtube) |
+| **ARKtube for Windows** | Native Win32 + WebView2 client for `youtube.com/tv`, mirroring the Linux port module-for-module. Early port, no CI yet | [`main`](https://github.com/ARK-tube/ARKtube/tree/main/arktube-windows) |
 | **Webtop** | A session layer that makes ARKtube selectable from the Ubuntu login screen, without starting the full GNOME Shell desktop | [`webtop`](https://github.com/ARK-tube/ARKtube/tree/webtop) |
 | **Webtop, Sway edition** | The same idea on Sway: ARKtube is the only window the compositor ever shows, fullscreen and borderless | [`arktube-layer-shell`](https://github.com/ARK-tube/ARKtube/tree/arktube-layer-shell) |
 | **ARKtube for Android** | A WebView shell around YouTube's mobile web UI | [`Android`](https://github.com/ARK-tube/ARKtube/tree/Android) |
@@ -43,7 +44,12 @@ YouTube (youtube.com/tv)  +  GTK3 + WebKit2GTK  =  YouTube, installed.
 ## Status
 
 Early and in progress. The Linux app runs today; tray integration, Immersive Mode,
-AppImage packaging, and non-Linux builds are not ported yet. The repository's
+and AppImage packaging are not ported yet there. A Windows port
+(`arktube-windows/`) has now started, mirroring the Linux app module-for-module;
+it launches youtube.com/tv with the same TV/Leanback spoof, fullscreen toggle,
+connectivity gating and boot splash, but has no CI, installer packaging, tray
+icon, or Immersive Mode yet either -- see `arktube-windows/README.md`'s own
+Status section. macOS remains unstarted. The repository's
 [roadmap](https://github.com/ARK-tube/ARKtube#status) tracks what is done and what is open.
 
 ## Try it
@@ -80,6 +86,19 @@ YouTube is a trademark of Google LLC.</sub>
 * **`arktube_linux/packaging/arktube-linux.desktop`** — the installed
   `.desktop` launcher entry
 * **`arktube_linux/CMakeLists.txt`** — build and install rules
+* **`arktube-windows/src/`** — the same module split ported to Win32 +
+  WebView2: `main.cpp` is the window/orchestration wiring, `platform/`
+  owns resource lookup and the registry-backed persisted settings,
+  `net/` owns the Winsock connectivity check, and `ui/` owns the
+  WebView2 controller (user-agent and script injection),
+  fullscreen/window input handling, and the GDI+-drawn boot-splash /
+  no-internet overlays
+* **`arktube-windows/resources/js/user-script.js`** — the identical
+  file injected on Linux (see that file's header comment), injected
+  here via `CoreWebView2::AddScriptToExecuteOnDocumentCreatedAsync()`
+  instead of WebKitGTK's document-start hook
+* **`arktube-windows/CMakeLists.txt`** — build and install rules,
+  including the WebView2 SDK fetch
 
 ### Initialization flow
 

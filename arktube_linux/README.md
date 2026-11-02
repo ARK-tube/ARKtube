@@ -86,7 +86,12 @@ Not yet ported:
 * [ ] Tray icon / tray menu
 * [ ] Immersive Mode (fullscreen lockdown + devtools guard)
 * [ ] AppImage packaging (only the `.deb` is currently produced by CI)
-* [ ] Windows / macOS builds
+* [ ] macOS build
+* [x] ~~Windows build~~ — started as a separate, early-stage port in
+      [`../arktube-windows`](../arktube-windows), mirroring this
+      directory module-for-module; see that directory's own README for
+      its status, which is behind this one (no CI, no installer
+      packaging yet)
 
 ## Building
 
