@@ -1,0 +1,103 @@
+name: Build arktube-windows
+
+# Builds the native Win32 + WebView2 Windows port that lives in
+# arktube-windows/, independently of arktube_linux/ and its own
+# arktube-linux.yml (which this mirrors structurally: configure, build,
+# install into a staging prefix, package, upload). Mirrors that
+# workflow's job shape, not its toolchain -- MSVC + the WebView2 SDK
+# (fetched by ../arktube-windows/CMakeLists.txt itself) instead of GTK3
+# + WebKit2GTK, and an NSIS installer instead of a .deb, since Windows
+# has no system package format CMake's install() output maps onto
+# directly the way `dpkg-deb --build` does for a /usr-shaped prefix.
+#
+# All compilation happens here, in CI -- there is no prebuilt binary
+# checked into arktube-windows/, same policy as arktube_linux/.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "arktube-windows/**"
+      - ".github/workflows/arktube-windows.yml"
+  pull_request:
+    paths:
+      - "arktube-windows/**"
+      - ".github/workflows/arktube-windows.yml"
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    name: Build arktube-windows (x64)
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: arktube-windows
+        shell: pwsh
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # windows-latest already carries the MSVC toolchain (via the
+      # "Visual Studio Build Tools" preinstalled image) and a CMake new
+      # enough for this project's cmake_minimum_required(VERSION 3.21)
+      # -- see ../arktube-windows/CMakeLists.txt -- so, unlike
+      # arktube-linux.yml's `apt-get install`, there's no build
+      # dependency to install before configuring. The WebView2 SDK
+      # itself is fetched by that same CMakeLists.txt's
+      # FetchContent_Declare(webview2 ...) during the Configure step
+      # below, not here.
+      - name: Configure
+        run: cmake -B build -S . -A x64 -DCMAKE_BUILD_TYPE=RelWithDebInfo
+
+      - name: Build
+        run: cmake --build build --config RelWithDebInfo
+
+      - name: Install into staging prefix
+        run: cmake --install build --config RelWithDebInfo --prefix "${{ github.workspace }}\arktube-windows\stage"
+
+      - name: Install NSIS
+        run: choco install nsis -y --no-progress
+
+      - name: Build Windows installer
+        shell: pwsh
+        run: |
+          $Version = "0.1.${env:GITHUB_RUN_NUMBER}"
+          $OutFile = "${{ github.workspace }}\arktube-windows\ARKtube-Windows-Setup.exe"
+
+          & "$env:ProgramFiles (x86)\NSIS\makensis.exe" `
+            "/DSTAGE_DIR=${{ github.workspace }}\arktube-windows\stage" `
+            "/DVERSION=$Version" `
+            "/DOUT_FILE=$OutFile" `
+            "packaging\arktube-windows.nsi"
+
+          if (-not (Test-Path $OutFile)) {
+            throw "makensis did not produce $OutFile"
+          }
+
+      - name: Upload build-tree artifact (binary + resources, runnable as-is)
+        uses: actions/upload-artifact@v4
+        with:
+          name: arktube_windows-x64
+          path: |
+            arktube-windows/build/RelWithDebInfo/arktube_windows.exe
+            arktube-windows/build/RelWithDebInfo/WebView2Loader.dll
+            arktube-windows/build/RelWithDebInfo/resources
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload installed-prefix artifact (flat install layout)
+        uses: actions/upload-artifact@v4
+        with:
+          name: arktube_windows-x64-stage
+          path: arktube-windows/stage
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: arktube_windows-x64-installer
+          path: arktube-windows/ARKtube-Windows-Setup.exe
+          if-no-files-found: error
+          retention-days: 14
