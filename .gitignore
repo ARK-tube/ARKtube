@@ -1,3 +1,4 @@
 *.patch
 debug.keystore
 debug.keystore.*
+src/overlay

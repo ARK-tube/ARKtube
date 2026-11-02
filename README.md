@@ -68,9 +68,11 @@ YouTube is a trademark of Google LLC.</sub>
 YouTube is a trademark of Google LLC.</sub>
 
 
-* **`arktube_linux/src/main.c`** — window/webview creation, user-agent
-  and hardware-acceleration setup, fullscreen handling, the
-  connectivity check, and the boot-splash / no-internet overlays
+* **`arktube_linux/src/`** — modular monolith: `main.c` is just the
+  GTK wiring; `platform/` owns resource lookup and persisted settings,
+  `net/` owns the connectivity check, and `ui/` owns the webview
+  (user-agent and hardware-acceleration setup), fullscreen/window
+  input handling, and the boot-splash / no-internet overlays
 * **`arktube_linux/resources/js/user-script.js`** — injected at
   document-start into every frame of `youtube.com/tv`: the
   `navigator`/`screen` identity spoof, Home-key SPA navigation,

@@ -12,9 +12,26 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 pkg_check_modules(WEBKIT2GTK REQUIRED webkit2gtk-4.1)
 
-add_executable(arktube_linux src/main.c)
+# Modular monolith: one binary, but each concern (resource lookup,
+# persisted settings, connectivity polling, the webview, the splash /
+# no-internet overlays, keyboard & window input) lives in its own
+# module under src/platform, src/net and src/ui instead of one big
+# main.c. main.c itself is just the wiring between them.
+add_executable(arktube_linux
+    src/main.c
+    src/platform/resource_paths.c
+    src/platform/settings.c
+    src/net/connectivity.c
+    src/ui/stretch_image.c
+    src/ui/spinner.c
+    src/ui/splash_overlay.c
+    src/ui/no_internet_overlay.c
+    src/ui/input.c
+    src/ui/webview.c
+)
 
 target_include_directories(arktube_linux PRIVATE
+    src
     ${GTK3_INCLUDE_DIRS}
     ${WEBKIT2GTK_INCLUDE_DIRS}
 )
